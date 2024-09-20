@@ -9,8 +9,12 @@ Sources:
 
 ## Development
 
+### Setup
+Use [asdf](https://asdf-vm.com/guide/getting-started.html) to `asdf install` gleam and other dependencies defined in [.tool-versions](./.tool-versions).
+
+### Run
 ```sh
-gleam run   # Run the project
+gleam run
 ```
 Open [localhost:3000](http://localhost:3000) in your browser.
 
