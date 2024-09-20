@@ -7,27 +7,16 @@ import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/io
 import gleam/option.{None}
-import mist.{type Connection, type ResponseData}
-
-//import radiate
-
-//import gleam/otp/actor
 import gleam/result
 import gleam/string
 import logging
+import mist.{type Connection, type ResponseData}
 
 import ip_utils.{get_client_host_port}
 
 pub fn main() {
   io.println("Hello world!")
   logging.configure()
-
-  //let _ =
-  //  radiate.new()
-  //  |> radiate.add_dir(".")
-  //  |> radiate.add_dir("./files")
-  //  |> radiate.add_dir("./src")
-  //  |> radiate.start()
 
   let room_actor = room_actor.start()
 

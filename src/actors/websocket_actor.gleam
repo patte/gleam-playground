@@ -8,8 +8,6 @@ import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/option.{type Option, None, Some}
 import gleam/otp/actor.{type Next, Stop}
-import gleam/regex
-import gleam/string
 import logging
 import mist.{
   type Connection, type ResponseData, type WebsocketConnection,
@@ -73,18 +71,7 @@ pub fn handle_message(
     Text(message) -> {
       {
         use room_subject <- option.then(state.room_subject)
-        //use name <- option.then(state.name)
-
-        let content = message
-        //let assert Ok(chat_pattern) =
-        //  regex.from_string("^[a-zA-Z0-9 .,!?'\"@#%^&*()_+-=;:~`]*$")
-        //
-        //case regex.check(chat_pattern, content) && !string.is_empty(content) {
-        //  True -> {
-        Some(process.send(room_subject, SendToAll(content)))
-        //  }
-        //  False -> None
-        //}
+        Some(process.send(room_subject, SendToAll(message)))
       }
 
       state |> actor.continue

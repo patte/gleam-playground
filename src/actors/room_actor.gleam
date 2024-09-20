@@ -38,19 +38,6 @@ fn handle_message(
         logging.Info,
         "num participants: " <> list.length(new_participants) |> int.to_string,
       )
-      //process.send(
-      //  new_participant.1,
-      //  JoinRoom(
-      //    room_subject: actor.,
-      //    participants: new_participants
-      //      |> list.filter_map(fn(p) {
-      //        case p.1 != user_subject {
-      //          True -> Ok(p.0)
-      //          False -> Error(Nil)
-      //        }
-      //      }),
-      //  ),
-      //)
 
       new_state |> actor.continue
     }
