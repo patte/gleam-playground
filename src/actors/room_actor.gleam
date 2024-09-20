@@ -54,11 +54,10 @@ fn handle_message(
       let num_participants = list.length(state.participants)
       logging.log(
         logging.Info,
-        "Sending message: "
-          <> message
-          <> " to "
+        "Sending to "
           <> num_participants |> int.to_string
-          <> " participants",
+          <> " participants: "
+          <> message,
       )
 
       list.each(state.participants, fn(p) {

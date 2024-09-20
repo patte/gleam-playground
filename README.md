@@ -13,3 +13,7 @@ Sources:
 gleam run   # Run the project
 ```
 Open [localhost:3000](http://localhost:3000) in your browser.
+
+## Screenshot
+
+![Screenshot](./docs/screenshot.png)
