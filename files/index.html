@@ -125,12 +125,14 @@
           };
 
           socket.onmessage = (event) => {
-            messageDisplay.value += "Server: " + event.data + "\n";
+            //messageDisplay.value += "Server: " + event.data + "\n";
+            messageDisplay.value += event.data + "\n";
           };
 
           socket.onclose = () => {
             updateStatus("disconnected");
             isConnected = false;
+            setTimeout(connect, 1000);
           };
 
           socket.onerror = (error) => {
@@ -157,7 +159,7 @@
           const message = messageInput.value;
           if (message && socket.readyState === WebSocket.OPEN) {
             socket.send(message);
-            messageDisplay.value += "You:    " + message + "\n";
+            //messageDisplay.value += "You:    " + message + "\n";
             messageInput.value = "";
           }
         }
