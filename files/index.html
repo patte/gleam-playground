@@ -1,15 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Test</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gleam WebSocket Example</title>
     <style>
       body {
-        background-color: #000000;
-        color: #a5a5a5;
+        background-color: #121212;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        box-sizing: border-box;
+      }
+
+      #statusContainer {
+        padding: 10px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .connected {
+        color: #00ff00;
+      }
+
+      .disconnected {
+        color: #ff0000;
+      }
+
+      .connecting {
+        color: #ffff00;
+      }
+
+      #messageDisplay {
+        width: calc(100% - 21px);
+        height: 300px;
+        margin-bottom: 10px;
+        background-color: #1e1e1e;
+        color: #ffffff;
+        border: 1px solid #333333;
+        padding: 10px;
+      }
+
+      #messageInput {
+        width: calc(100% - 90px);
+        padding: 10px;
+        background-color: #1e1e1e;
+        color: #ffffff;
+        border: 1px solid #333333;
+      }
+
+      #sendButton {
+        width: 63px;
+        padding: 10px;
+        background-color: #333333;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+      }
+
+      #sendButton:hover {
+        background-color: #444444;
+      }
+
+      .disabled {
+        background-color: #232323 !important;
+        color: #666666 !important;
+        cursor: not-allowed !important;
+      }
+
+      #toggleConnection {
+        margin-left: 10px;
+        padding: 5px 10px;
+        background-color: #333333;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+      }
+
+      #toggleConnection:hover {
+        background-color: #444444;
       }
     </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let socket;
+        let isConnected = false;
+        const statusText = document.getElementById("statusText");
+        const messageDisplay = document.getElementById("messageDisplay");
+        const messageInput = document.getElementById("messageInput");
+        const toggleButton = document.getElementById("toggleConnection");
+        const sendButton = document.getElementById("sendButton");
+
+        function updateStatus(status) {
+          if (status === "connected") {
+            statusText.textContent = "Connected";
+            statusText.className = "connected";
+            toggleButton.textContent = "Disconnect";
+            messageInput.disabled = false;
+            messageInput.className = "";
+            sendButton.disabled = false;
+            sendButton.className = "";
+          } else if (status === "connecting") {
+            statusText.textContent = "Connecting...";
+            statusText.className = "connecting";
+          } else {
+            statusText.textContent = "Disconnected";
+            statusText.className = "disconnected";
+            toggleButton.textContent = "Connect";
+            messageInput.disabled = true;
+            messageInput.className = "disabled";
+            sendButton.disabled = true;
+            sendButton.className = "disabled";
+          }
+        }
+
+        function connect() {
+          updateStatus("connecting");
+          socket = new WebSocket("ws://localhost:3000/ws");
+
+          socket.onopen = () => {
+            updateStatus("connected");
+            isConnected = true;
+          };
+
+          socket.onmessage = (event) => {
+            messageDisplay.value += "Server: " + event.data + "\n";
+          };
+
+          socket.onclose = () => {
+            updateStatus("disconnected");
+            isConnected = false;
+          };
+
+          socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+            socket.close();
+          };
+        }
+
+        function disconnect() {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.close();
+          }
+        }
+
+        function toggleConnection() {
+          if (isConnected) {
+            disconnect();
+          } else {
+            connect();
+          }
+        }
+
+        function sendMessage() {
+          const message = messageInput.value;
+          if (message && socket.readyState === WebSocket.OPEN) {
+            socket.send(message);
+            messageDisplay.value += "You:    " + message + "\n";
+            messageInput.value = "";
+          }
+        }
+
+        // Start WebSocket connection on page load
+        connect();
+
+        document
+          .querySelector("button#sendButton")
+          .addEventListener("click", sendMessage);
+
+        document.querySelector("input").addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            sendMessage();
+          }
+        });
+
+        toggleButton.addEventListener("click", toggleConnection);
+      });
+    </script>
   </head>
   <body>
-    <h1>Hello World</h1>
+    <main>
+      <h1>Gleam WebSocket Example</h1>
+      <div id="statusContainer">
+        Status: <span id="statusText">Initializing...</span>
+        <button id="toggleConnection">Disconnect</button>
+      </div>
+
+      <textarea id="messageDisplay" readonly></textarea><br />
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button id="sendButton">Send</button>
+    </main>
   </body>
 </html>

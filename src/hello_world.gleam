@@ -1,10 +1,12 @@
 import gleam/bytes_builder
-import gleam/erlang/process
+import gleam/erlang/process.{type Subject}
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/io
-import gleam/option.{None}
-import mist.{type Connection, type ResponseData}
+import gleam/option.{None, Some}
+import gleam/otp/actor.{type StartError}
+import gleam/set.{type Set}
+import mist.{type Connection, type ResponseData, type WebsocketConnection}
 
 //import radiate
 
@@ -32,6 +34,10 @@ pub fn main() {
   process.sleep_forever()
 }
 
+pub type AppState {
+  AppState(clients: Set(WebsocketConnection))
+}
+
 fn serve() {
   let not_found =
     response.new(404)
@@ -53,12 +59,35 @@ fn serve() {
         [] -> serve_file(req, ["index.html"])
         ["file", ..rest] -> serve_file(req, rest)
         ["hello"] -> serve_hello_world(req)
+        ["ws"] ->
+          mist.websocket(
+            request: req,
+            on_init: fn(_conn) { #(Nil, None) },
+            on_close: fn(_state) { io.println("goodbye!") },
+            handler: handle_ws_message,
+          )
         _ -> not_found
       }
     }
     |> mist.new
     |> mist.port(3000)
     |> mist.start_http
+}
+
+fn handle_ws_message(state, conn, message) {
+  case message {
+    mist.Text("ping") -> {
+      let assert Ok(_) = mist.send_text_frame(conn, "pong")
+      actor.continue(state)
+    }
+    mist.Text(_) | mist.Binary(_) -> {
+      actor.continue(state)
+    }
+    mist.Custom(_) -> {
+      actor.continue(state)
+    }
+    mist.Closed | mist.Shutdown -> actor.Stop(process.Normal)
+  }
 }
 
 fn serve_hello_world(_req: Request(Connection)) -> Response(ResponseData) {
