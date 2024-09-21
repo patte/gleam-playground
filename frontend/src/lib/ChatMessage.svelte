@@ -2,6 +2,7 @@
   import { Button } from "$lib/components/ui/button";
   export let body = "Hello, world!";
   export let author = "Gleam";
+  export let delay = 0;
 </script>
 
 <div class="{$$props.class} mb-4">
@@ -13,8 +14,13 @@
       <p class="font-semibold">{author}</p>
       <p>{body}</p>
     </div>
-    <Button variant="ghost" size="icon" class="text-muted-foreground">
-      <!--<Trash2 className="w-4 h-4" />-->
-    </Button>
+    <div>
+      <!--
+      <Button variant="ghost" size="icon" class="text-muted-foreground">
+        <Trash2 className="w-4 h-4" />
+      </Button>
+      -->
+      <span class="text-xs text-gray-500">{delay}ms</span>
+    </div>
   </div>
 </div>
