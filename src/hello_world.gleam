@@ -45,10 +45,10 @@ fn serve(room_actor: Subject(RoomActorMessage)) {
 
       case path_segments {
         [] -> serve_file(req, ["index.html"])
-        ["file", ..rest] -> serve_file(req, rest)
         ["hello"] -> serve_hello_world(req)
         ["ws"] -> websocket_actor.start(req, room_actor)
-        _ -> not_found
+        _ -> serve_file(req, path_segments)
+        //_ -> not_found
       }
     }
     |> mist.new
@@ -65,7 +65,8 @@ fn serve_file(
   _req: Request(Connection),
   path: List(String),
 ) -> Response(ResponseData) {
-  let root = "./files"
+  // todo: path in prod
+  let root = "./frontend/dist"
   let path =
     string.concat([root, "/", string.replace(string.join(path, "/"), "..", "")])
 

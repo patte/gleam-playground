@@ -13,6 +13,7 @@ Sources:
 Use [asdf](https://asdf-vm.com/guide/getting-started.html) to `asdf install` gleam and other dependencies defined in [.tool-versions](./.tool-versions).
 
 ### Run
+Build the [frontend](./frontend/README.md) `bun build`, then start the server:
 ```sh
 gleam run
 ```

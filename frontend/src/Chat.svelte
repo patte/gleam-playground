@@ -130,7 +130,7 @@
   <Card.Header>
     <Card.Title class="flex items-center justify-between">
       <div class="space-x-2">
-        <span>Chat</span>
+        <span>Chaasdadfst</span>
         {#if $connected}
           <span class="text-sm text-green-500">Connected</span>
         {:else}
