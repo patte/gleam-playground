@@ -198,7 +198,7 @@
             }
           }
         }}
-        min="2"
+        min="0"
         max="10000"
         step="1"
         class="w-18 text-right"
