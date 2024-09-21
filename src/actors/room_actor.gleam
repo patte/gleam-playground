@@ -52,13 +52,13 @@ fn handle_message(
     }
     SendToAll(message) -> {
       let num_participants = list.length(state.participants)
-      logging.log(
-        logging.Info,
-        "Sending to "
-          <> num_participants |> int.to_string
-          <> " participants: "
-          <> message,
-      )
+      //logging.log(
+      //  logging.Info,
+      //  "Sending to "
+      //    <> num_participants |> int.to_string
+      //    <> " participants: "
+      //    <> message,
+      //)
 
       list.each(state.participants, fn(p) {
         process.send(p.1, SendToClient(message))

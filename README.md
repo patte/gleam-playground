@@ -19,6 +19,8 @@ gleam run
 ```
 Open [localhost:3000](http://localhost:3000) in your browser.
 
+Alternatively: [localhost:3000/test.html](http://localhost:3000/test.html) for the test page, which works without the frontend build.
+
 ## Screenshot
 
 ![Screenshot](./docs/screenshot.png)

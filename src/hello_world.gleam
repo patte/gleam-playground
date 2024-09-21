@@ -44,10 +44,11 @@ fn serve(room_actor: Subject(RoomActorMessage)) {
       )
 
       case path_segments {
-        [] -> serve_file(req, ["index.html"])
+        ["test.html"] -> serve_file(req, ["test.html"], "./files")
         ["hello"] -> serve_hello_world(req)
         ["ws"] -> websocket_actor.start(req, room_actor)
-        _ -> serve_file(req, path_segments)
+        [] -> serve_file(req, ["index.html"], "./frontend/dist")
+        _ -> serve_file(req, path_segments, "./frontend/dist")
         //_ -> not_found
       }
     }
@@ -64,9 +65,8 @@ fn serve_hello_world(_req: Request(Connection)) -> Response(ResponseData) {
 fn serve_file(
   _req: Request(Connection),
   path: List(String),
+  root: String,
 ) -> Response(ResponseData) {
-  // todo: path in prod
-  let root = "./frontend/dist"
   let path =
     string.concat([root, "/", string.replace(string.join(path, "/"), "..", "")])
 

@@ -2,7 +2,7 @@
   import { Button } from "$lib/components/ui/button";
   export let body = "Hello, world!";
   export let author = "Gleam";
-  export let delay = 0;
+  export let delay: number | undefined;
 </script>
 
 <div class="{$$props.class} mb-4">
@@ -20,7 +20,9 @@
         <Trash2 className="w-4 h-4" />
       </Button>
       -->
-      <span class="text-xs text-gray-500">{delay}ms</span>
+      <span class="text-xs text-gray-500"
+        >{delay !== undefined ? `${delay.toFixed(2)}ms` : ""}</span
+      >
     </div>
   </div>
 </div>
