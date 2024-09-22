@@ -27,6 +27,8 @@
   let input = "";
   let avgDelay = 0;
 
+  let meName = `User ${Math.floor(Math.random() * 1000)}`;
+
   function handleSubmit(e: SubmitEvent) {
     sendMessage(input);
     scrollToBottom();
@@ -63,7 +65,15 @@
     if (!isNaN(created_at.getTime())) {
       delay = new Date().getTime() - created_at.getTime();
     }
-    messages = [...messages, { ...parsedMessage, delay, created_at }];
+    messages = [
+      ...messages,
+      {
+        ...parsedMessage,
+        delay,
+        created_at,
+        author: parsedMessage.author === meName ? "Me" : parsedMessage.author,
+      },
+    ];
 
     // avg delay over last x messages
     avgDelay = messages
@@ -110,7 +120,7 @@
     if (socket.readyState <= 1) {
       let obj = {
         $: "ChatMessage",
-        author: "Me",
+        author: meName,
         created_at: new Date().toISOString(),
         text: message,
       };
@@ -121,7 +131,7 @@
     }
   };
 
-  let interval: number = 500;
+  let interval: number = 250;
   let autoSendInterval: number | undefined;
   function startSending() {
     autoSendInterval = setInterval(() => {
@@ -151,9 +161,11 @@
       </span>
       <span class="text-sm text-gray-500 w-[130px] text-right space-x-2">
         {#if avgDelay > 0}
+          <!--
           <span>
             {(1000 / avgDelay).toFixed(0)}mps
           </span>
+          -->
           <span>{avgDelay.toFixed(2)}ms</span>
         {/if}
       </span>
