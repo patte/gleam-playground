@@ -27,10 +27,6 @@ pub fn main() {
 }
 
 fn serve(room_actor: Subject(RoomActorMessage)) {
-  let not_found =
-    response.new(404)
-    |> response.set_body(mist.Bytes(bytes_builder.from_string("Not found")))
-
   let assert Ok(_) =
     fn(req: Request(Connection)) -> Response(ResponseData) {
       let path_segments = request.path_segments(req)
@@ -49,7 +45,11 @@ fn serve(room_actor: Subject(RoomActorMessage)) {
         ["ws"] -> websocket_actor.start(req, room_actor)
         [] -> serve_file(req, ["index.html"], "./frontend/dist")
         _ -> serve_file(req, path_segments, "./frontend/dist")
-        //_ -> not_found
+        //_ ->
+        //  response.new(404)
+        //  |> response.set_body(
+        //    mist.Bytes(bytes_builder.from_string("Not found")),
+        //  )
       }
     }
     |> mist.new

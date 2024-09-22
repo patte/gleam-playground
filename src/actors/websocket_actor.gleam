@@ -7,17 +7,14 @@ import gleam/erlang/process.{type Subject, Normal}
 import gleam/function
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
-import gleam/json.{type Json}
 import gleam/option.{type Option, None, Some}
 import gleam/otp/actor.{type Next, Stop}
-import gleam/string
 import logging
 import mist.{
   type Connection, type ResponseData, type WebsocketConnection,
   type WebsocketMessage, Custom, Text,
 }
 
-//import shared/src/shared.{Message, message_from_string, message_to_string}
 import shared/src/shared.{ChatMessage}
 
 pub type WebsocketActorState {
