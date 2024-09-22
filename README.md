@@ -7,6 +7,15 @@ Sources:
 - [hayleigh-dot-dev/fosdem-2023](https://github.com/hayleigh-dot-dev/fosdem-2023)
 - [bcpeinhardt/learn_otp_with_gleam](https://github.com/bcpeinhardt/learn_otp_with_gleam)
 
+## Structure
+This repo contains 3 projects:
+```
+./               # gleam module hello_world (backend)
+├─ src/shared/   # gleam module shared (shared types)
+├─ frontend/     # svelte (frontend)
+```
+The folder `src/shared` is part of the be project and also it's own project that is built to typescript and [copied to](./frontend/src/generated/) the frontend project. This is a prototype to test code sharing between gleam and typescript.
+
 ## Development
 
 ### Setup
