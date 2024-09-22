@@ -14,6 +14,10 @@
   import { writable } from "svelte/store";
   import { Ok } from "$generated/prelude.mjs";
   import { Slider } from "$lib/components/ui/slider/index.js";
+  import { Badge } from "$lib/components/ui/badge/index.js";
+  import Icon from "svelte-awesome";
+  import usersIcon from "svelte-awesome/icons/users";
+  import envelopeOIcon from "svelte-awesome/icons/envelopeO";
 
   type ChatMessage = Omit<
     ChatMessageSharedType,
@@ -162,25 +166,30 @@
 <Card.Root class="{$$props.class} min-h-64  w-full max-w-2xl mx-auto">
   <Card.Header>
     <Card.Title class="flex items-center justify-between">
-      <div class="space-x-2">
+      <div class="space-x-1">
         <span>Chat</span>
         {#if $connected}
-          <span class="text-sm text-green-500">Connected</span>
+          <div
+            class="w-3 h-3 rounded-full inline-block align-baseline bg-green-500"
+          />
         {:else}
-          <span class="text-sm text-red-500">Disconnected</span>
+          <div
+            class="w-3 h-3 rounded-full inline-block align-baseline bg-red-500"
+          />
         {/if}
       </div>
-      <div>
-        <span class="text-sm text-gray-500">
+      <div class="whitespace-nowrap">
+        <Badge variant="outline" class="text-gray-200">
+          <Icon scale={0.75} data={usersIcon} class="mr-1 text-gray-200" />
           {numParticipants}
-        </span>
-
-        <span class="text-sm text-gray-500">
+        </Badge>
+        <Badge variant="outline" class="text-gray-200">
+          <Icon scale={0.75} data={envelopeOIcon} class="mr-1 text-gray-200" />
           {chatMessages.length}
-        </span>
+        </Badge>
       </div>
       <span
-        class="text-sm text-gray-500 font-mono w-[130px] text-right space-x-2"
+        class="text-sm text-gray-500 font-mono w-[50px] text-right space-x-2"
       >
         {#if avgDelay > 0}
           <!--
