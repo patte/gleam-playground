@@ -18,6 +18,7 @@
   import Icon from "svelte-awesome";
   import usersIcon from "svelte-awesome/icons/users";
   import envelopeOIcon from "svelte-awesome/icons/envelopeO";
+  import { LinkedChart } from "svelte-tiny-linked-charts";
 
   type ChatMessage = Omit<
     ChatMessageSharedType,
@@ -34,6 +35,9 @@
   let numParticipants = 0;
 
   let meName = `User ${Math.floor(Math.random() * 1000)}`;
+
+  let chartData = {} as Record<string, number>;
+  let hoveredValue: number | undefined = undefined;
 
   function handleSubmit(e: SubmitEvent) {
     sendMessage(input);
@@ -96,6 +100,19 @@
           author: chatMessage.author === meName ? "Me" : chatMessage.author,
         },
       ];
+
+      // update chart data
+      chartData = chatMessages
+        .filter((m) => !!m.delay)
+        .slice(-50)
+        .reduce(
+          (acc, msg) => {
+            const date = msg.created_at.toISOString();
+            acc[date] = msg.delay!;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
 
       // avg delay over last x messages
       avgDelay = chatMessages
@@ -193,18 +210,39 @@
           {chatMessages.length}
         </Badge>
       </div>
-      <span
-        class="text-sm text-gray-500 font-mono w-[50px] text-right space-x-2"
-      >
-        {#if avgDelay > 0}
-          <!--
-          <span>
-            {(1000 / avgDelay).toFixed(0)}mps
-          </span>
-          -->
-          <span>{avgDelay.toFixed(2)}ms</span>
-        {/if}
-      </span>
+      <div class="flex justify-end space-x-2">
+        <LinkedChart
+          class="translate-y-[-4px]"
+          type="line"
+          height={21}
+          width={50}
+          lineColor={"#6b7280"}
+          fill={"#ffffff"}
+          barMinWidth={1}
+          data={chartData}
+          dispatchEvents
+          on:hover={(e) => {
+            const value = e.detail.value;
+            if (value !== undefined) {
+              hoveredValue = value;
+            }
+          }}
+          on:blur={() => {
+            hoveredValue = undefined;
+          }}
+        />
+        <span
+          class="text-sm text-gray-500 font-mono w-[50px] text-right space-x-2"
+        >
+          {#if avgDelay > 0}
+            <span
+              >{hoveredValue !== undefined
+                ? hoveredValue
+                : avgDelay.toFixed(2)}ms</span
+            >
+          {/if}
+        </span>
+      </div>
     </Card.Title>
   </Card.Header>
   <Card.Content class=" flex flex-col justify-end">
