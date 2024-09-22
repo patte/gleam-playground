@@ -75,9 +75,14 @@
     } else if (parsedMessage instanceof ChatMessageSharedType) {
       const chatMessage = parsedMessage as ChatMessageSharedType;
 
-      let delay = 0;
+      let delay: number | undefined = undefined;
       let created_at: Date | undefined = new Date(chatMessage.created_at);
-      if (!isNaN(created_at.getTime())) {
+      if (
+        // as clocks are not synced, only my messages can be measured
+        chatMessage.author === meName &&
+        created_at &&
+        !isNaN(created_at.getTime())
+      ) {
         delay = new Date().getTime() - created_at.getTime();
       }
 
