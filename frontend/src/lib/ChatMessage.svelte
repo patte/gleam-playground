@@ -20,7 +20,7 @@
         <Trash2 className="w-4 h-4" />
       </Button>
       -->
-      <span class="text-xs text-gray-500"
+      <span class="text-xs text-gray-500 font-mono"
         >{delay !== undefined ? `${delay}ms` : ""}</span
       >
     </div>

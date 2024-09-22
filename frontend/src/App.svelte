@@ -5,7 +5,7 @@
   import Chat from "Chat.svelte";
 </script>
 
-<div class="flex flex-col justify-between h-dvh">
+<div class="flex flex-col justify-between h-dvh px-2 md:px-0">
   <header>
     <h1 class="text-2xl">&nbsp;</h1>
   </header>

@@ -11,6 +11,7 @@
   import { onMount, onDestroy } from "svelte";
   import { writable } from "svelte/store";
   import { Ok } from "$generated/prelude.mjs";
+  import { Slider } from "$lib/components/ui/slider/index.js";
 
   //type Message = {
   //  created_at: Date;
@@ -138,7 +139,7 @@
   let autoSendInterval: number | undefined;
   function startSending() {
     autoSendInterval = setInterval(() => {
-      sendMessage(input || "Hello");
+      sendMessage(input || "Hello 👋");
     }, interval);
     setTimeout(scrollToBottom, 1);
   }
@@ -162,7 +163,9 @@
       <span class="text-sm text-gray-500">
         {messages.length}
       </span>
-      <span class="text-sm text-gray-500 w-[130px] text-right space-x-2">
+      <span
+        class="text-sm text-gray-500 font-mono w-[130px] text-right space-x-2"
+      >
         {#if avgDelay > 0}
           <!--
           <span>
@@ -177,7 +180,7 @@
   <Card.Content class=" flex flex-col justify-end">
     <div
       class="overflow-y-auto"
-      style="height: max(250px, calc(100vh - 270px));"
+      style="height: max(100px, calc(100vh - 300px));"
     >
       {#each messages as message}
         <ChatMessage
@@ -189,45 +192,80 @@
       {/each}
       <div class="anchor" />
     </div>
-    <form class="flex space-x-2" on:submit|preventDefault={handleSubmit}>
-      <Input bind:value={input} placeholder="Write a message…" class="flex-1" />
-      <Button type="submit" disabled={input.trim().length === 0}>Send</Button>
-      <Button
-        type="button"
-        on:click={!!autoSendInterval
-          ? stopSending
-          : () => {
-              scrollToBottom();
-              startSending();
-            }}
-        class="bg-blue-500 hover:bg-blue-700"
-      >
-        {!!autoSendInterval ? "Stop" : "Start"}
-      </Button>
-      <Input
-        type="number"
-        bind:value={interval}
-        on:blur={() => {
-          if (autoSendInterval) {
-            stopSending();
-            startSending();
-          }
-        }}
-        on:keypress={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
+    <div class="space-y-2">
+      <div class="flex space-x-2 justify-end">
+        <Slider
+          value={[interval]}
+          onValueChange={(e) => {
+            interval = e[0];
             if (autoSendInterval) {
               stopSending();
               startSending();
             }
-          }
-        }}
-        min="0"
-        max="10000"
-        step="1"
-        class="w-18 text-right"
-      />
-    </form>
+          }}
+          min={0}
+          max={500}
+          step={1}
+          class="max-w-[150px]"
+        />
+        <p style="line-height: 37px;" class="w-[60px] font-mono text-right">
+          <span style="vertical-align: middle;">{interval}ms</span>
+        </p>
+        <!--
+        <Input
+          type="number"
+          bind:value={interval}
+          on:blur={() => {
+            if (autoSendInterval) {
+              stopSending();
+              startSending();
+            }
+          }}
+          on:keypress={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (autoSendInterval) {
+                stopSending();
+                startSending();
+              }
+            }
+          }}
+          min="0"
+          max="1000"
+          step="1"
+          class="w-18 text-right"
+        />
+        -->
+        <Button
+          type="button"
+          on:click={!!autoSendInterval
+            ? stopSending
+            : () => {
+                scrollToBottom();
+                startSending();
+              }}
+          class="bg-blue-500 hover:bg-blue-700 w-[60px]"
+          disabled={!autoSendInterval && !$connected}
+        >
+          {!!autoSendInterval ? "Stop" : "Start"}
+        </Button>
+      </div>
+      <form
+        class="flex space-x-2 flex-grow"
+        on:submit|preventDefault={handleSubmit}
+      >
+        <Input
+          bind:value={input}
+          placeholder="Write a message…"
+          class="flex-1"
+        />
+        <Button
+          type="submit"
+          disabled={input.trim().length === 0}
+          class="w-[60px]">Send</Button
+        >
+      </form>
+    </div>
   </Card.Content>
 </Card.Root>
 
