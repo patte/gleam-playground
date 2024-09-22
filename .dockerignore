@@ -1,0 +1,9 @@
+build/
+src/shared/build/
+frontend/node_modules/
+frontend/dist/
+erl_crash.dump
+*.beam
+*.ez
+docs/
+.github/
