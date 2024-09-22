@@ -9,6 +9,8 @@ import actors/messages.{
   DisconnectUser, SendToAll, SendToClient,
 }
 
+import shared/src/shared.{type Message, RoomUpdate}
+
 pub type RoomActorState {
   RoomActorState(participants: List(#(String, Subject(CustomWebsocketMessage))))
 }
@@ -28,43 +30,55 @@ fn handle_message(
 ) -> Next(RoomActorMessage, RoomActorState) {
   case message {
     ConnectUser(user_subject) -> {
-      logging.log(logging.Info, "Connecting a user to a room")
-
       let new_participant = #("User", user_subject)
       let new_participants = list.append(state.participants, [new_participant])
+      let num_participants = list.length(new_participants)
+
       let new_state = RoomActorState(participants: new_participants)
+
+      send_to_all(new_participants, RoomUpdate(num_participants))
 
       logging.log(
         logging.Info,
-        "num participants: " <> list.length(new_participants) |> int.to_string,
+        "User joined! num participants: " <> num_participants |> int.to_string,
       )
 
       new_state |> actor.continue
     }
     DisconnectUser(user_subject) -> {
-      logging.log(logging.Info, "Disconnecting a user from a room")
-
       let new_participants =
         list.filter(state.participants, fn(p) { p.1 != user_subject })
       let new_state = RoomActorState(participants: new_participants)
+      let num_participants = list.length(new_participants)
+
+      send_to_all(new_participants, RoomUpdate(num_participants))
+
+      logging.log(
+        logging.Info,
+        "User left! num participants: " <> num_participants |> int.to_string,
+      )
 
       new_state |> actor.continue
     }
     SendToAll(message) -> {
-      let num_participants = list.length(state.participants)
-      //logging.log(
-      //  logging.Info,
-      //  "Sending to "
-      //    <> num_participants |> int.to_string
-      //    <> " participants: "
-      //    <> message,
-      //)
-
-      list.each(state.participants, fn(p) {
-        process.send(p.1, SendToClient(message))
-      })
+      send_to_all(state.participants, message)
 
       state |> actor.continue
     }
   }
+}
+
+fn send_to_all(
+  participants: List(#(String, Subject(CustomWebsocketMessage))),
+  message: Message,
+) {
+  let num_participants = list.length(participants)
+  logging.log(
+    logging.Info,
+    "Sending to "
+      <> num_participants |> int.to_string
+      <> " participants: "
+      <> shared.message_to_string(message),
+  )
+  list.each(participants, fn(p) { process.send(p.1, SendToClient(message)) })
 }

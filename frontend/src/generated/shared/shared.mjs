@@ -14,8 +14,15 @@ export class ChatMessage extends $CustomType {
   }
 }
 
+export class RoomUpdate extends $CustomType {
+  constructor(num_participants) {
+    super();
+    this.num_participants = num_participants;
+  }
+}
+
 export function message_to_json(msg) {
-  {
+  if (msg instanceof ChatMessage) {
     let text = msg.text;
     let author = msg.author;
     let created_at = msg.created_at;
@@ -27,15 +34,18 @@ export function message_to_json(msg) {
         ["created_at", $json.string(created_at)],
       ]),
     );
+  } else {
+    let num_participants = msg.num_participants;
+    return $json.object(
+      toList([
+        ["$", $json.string("RoomUpdate")],
+        ["num_participants", $json.int(num_participants)],
+      ]),
+    );
   }
 }
 
-export function message_to_string(msg) {
-  let _pipe = message_to_json(msg);
-  return $json.to_string(_pipe);
-}
-
-export function decoder(dynamic) {
+function decoder(dynamic) {
   return $result.then$(
     $dynamic.field("$", $dynamic.string)(dynamic),
     (tag) => {
@@ -46,6 +56,11 @@ export function decoder(dynamic) {
             $dynamic.field("text", $dynamic.string),
             $dynamic.field("author", $dynamic.string),
             $dynamic.field("created_at", $dynamic.string),
+          );
+        } else if (tag === "RoomUpdate") {
+          return $dynamic.decode1(
+            (var0) => { return new RoomUpdate(var0); },
+            $dynamic.field("num_participants", $dynamic.int),
           );
         } else {
           return (_) => {
@@ -58,6 +73,11 @@ export function decoder(dynamic) {
       return decoder$1(dynamic);
     },
   );
+}
+
+export function message_to_string(msg) {
+  let _pipe = message_to_json(msg);
+  return $json.to_string(_pipe);
 }
 
 export function message_from_string(json) {

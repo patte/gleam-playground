@@ -2,6 +2,7 @@ import actors/messages.{
   type CustomWebsocketMessage, type RoomActorMessage, ConnectUser,
   DisconnectUser, SendToAll, SendToClient,
 }
+import birl
 import gleam/erlang/process.{type Subject, Normal}
 import gleam/function
 import gleam/http/request.{type Request}
@@ -16,7 +17,8 @@ import mist.{
   type WebsocketMessage, Custom, Text,
 }
 
-import shared/src/shared
+//import shared/src/shared.{Message, message_from_string, message_to_string}
+import shared/src/shared.{ChatMessage}
 
 pub type WebsocketActorState {
   WebsocketActorState(
@@ -65,36 +67,50 @@ pub fn handle_message(
   message: WebsocketMessage(CustomWebsocketMessage),
 ) -> Next(CustomWebsocketMessage, WebsocketActorState) {
   case message {
+    // from internal
     Custom(message) ->
       case message {
         SendToClient(message) -> {
-          send_client_string(connection, message)
+          // stringify to json
+          let message_json = shared.message_to_string(message)
+          let assert Ok(_) = mist.send_text_frame(connection, message_json)
           state |> actor.continue
         }
       }
+    // from browser
     Text(message) -> {
       // parse from json
-      let parsed_message = message |> shared.message_from_string
-
-      // stringify to json
-      let encoded_message = case parsed_message {
+      let parsed_message = case message |> shared.message_from_string {
         Ok(parsed_message) -> {
-          logging.log(
-            logging.Info,
-            "Received message: " <> string.inspect(parsed_message),
-          )
-          shared.message_to_string(parsed_message)
+          parsed_message
         }
         Error(_) -> {
           logging.log(logging.Error, "Failed to parse message: " <> message)
-          message
+          let now = birl.now()
+          ChatMessage(
+            "Failed to parse message: " <> message,
+            "System",
+            birl.to_iso8601(now),
+          )
         }
       }
 
-      // send to room
-      {
-        use room_subject <- option.then(state.room_subject)
-        Some(process.send(room_subject, SendToAll(encoded_message)))
+      // forward ChatMessage to room
+      case parsed_message {
+        ChatMessage(_, _, _) -> {
+          // send to room
+          {
+            use room_subject <- option.then(state.room_subject)
+            Some(process.send(room_subject, SendToAll(parsed_message)))
+          }
+        }
+        _ -> {
+          logging.log(
+            logging.Error,
+            "Received message is not a ChatMessage: " <> message,
+          )
+          None
+        }
       }
 
       state |> actor.continue
@@ -104,11 +120,6 @@ pub fn handle_message(
       Stop(Normal)
     }
   }
-}
-
-fn send_client_string(connection: WebsocketConnection, message: String) {
-  let assert Ok(_) = mist.send_text_frame(connection, message)
-  Nil
 }
 
 fn cleanup(state: WebsocketActorState) -> WebsocketActorState {

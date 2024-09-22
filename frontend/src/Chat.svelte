@@ -6,27 +6,28 @@
   import {
     message_to_string,
     message_from_string,
+    type Message$ as MessageSharedType,
     ChatMessage as ChatMessageSharedType,
+    RoomUpdate as RoomUpdateSharedType,
   } from "$generated/shared/shared.mjs";
   import { onMount, onDestroy } from "svelte";
   import { writable } from "svelte/store";
   import { Ok } from "$generated/prelude.mjs";
   import { Slider } from "$lib/components/ui/slider/index.js";
 
-  //type Message = {
-  //  created_at: Date;
-  //  author: string;
-  //  text: string;
-  //};
-  type Message = Omit<ChatMessageSharedType, "withFields" | "created_at"> & {
+  type ChatMessage = Omit<
+    ChatMessageSharedType,
+    "withFields" | "created_at"
+  > & {
     created_at: Date;
   };
 
-  type MessageWithDelay = Message & { delay?: number | undefined };
+  type ChatMessageWithDelay = ChatMessage & { delay?: number | undefined };
 
-  let messages = [] as MessageWithDelay[];
+  let chatMessages = [] as ChatMessageWithDelay[];
   let input = "";
   let avgDelay = 0;
+  let numParticipants = 0;
 
   let meName = `User ${Math.floor(Math.random() * 1000)}`;
 
@@ -52,35 +53,47 @@
   const onSocketClose = () => connected.set(false);
   const onMessage = (event: MessageEvent) => {
     let result = message_from_string(event.data);
+
+    // validate message
     if (!(result instanceof Ok)) {
-      messages = [
-        ...messages,
+      chatMessages = [
+        ...chatMessages,
         { created_at: new Date(), author: "Parse Error", text: event.data },
       ];
       return;
     }
-    let parsedMessage = result["0"] as ChatMessageSharedType;
 
-    let delay = 0;
-    let created_at: Date | undefined = new Date(parsedMessage.created_at);
-    if (!isNaN(created_at.getTime())) {
-      delay = new Date().getTime() - created_at.getTime();
+    const parsedMessage = result["0"] as MessageSharedType;
+
+    if (parsedMessage instanceof RoomUpdateSharedType) {
+      let roomUpdate = parsedMessage as RoomUpdateSharedType;
+      numParticipants = roomUpdate.num_participants;
+    } else if (parsedMessage instanceof ChatMessageSharedType) {
+      const chatMessage = parsedMessage as ChatMessageSharedType;
+
+      let delay = 0;
+      let created_at: Date | undefined = new Date(chatMessage.created_at);
+      if (!isNaN(created_at.getTime())) {
+        delay = new Date().getTime() - created_at.getTime();
+      }
+
+      // append to local messages
+      chatMessages = [
+        ...chatMessages,
+        {
+          ...chatMessage,
+          delay,
+          created_at,
+          author: chatMessage.author === meName ? "Me" : chatMessage.author,
+        },
+      ];
+
+      // avg delay over last x messages
+      avgDelay = chatMessages
+        .slice(-200)
+        .reduce((acc, msg) => acc + (msg.delay || 0), 0);
+      avgDelay /= Math.min(chatMessages.length, 200);
     }
-    messages = [
-      ...messages,
-      {
-        ...parsedMessage,
-        delay,
-        created_at,
-        author: parsedMessage.author === meName ? "Me" : parsedMessage.author,
-      },
-    ];
-
-    // avg delay over last x messages
-    avgDelay = messages
-      .slice(-200)
-      .reduce((acc, msg) => acc + (msg.delay || 0), 0);
-    avgDelay /= Math.min(messages.length, 200);
   };
 
   function terminateSocket(socket: WebSocket) {
@@ -122,15 +135,12 @@
 
   const sendMessage = (message: string) => {
     if (socket.readyState <= 1) {
-      let obj = {
-        $: "ChatMessage",
-        author: meName,
-        created_at: new Date().toISOString(),
-        text: message,
-      };
-      // todo:  Property 'withFields' is missing in type '{ ... }' but required in type 'ChatMessage'.
-      // @ts-ignore withFiels
-      const encoded = message_to_string(obj);
+      const chatMessage = new ChatMessageSharedType(
+        message,
+        meName,
+        new Date().toISOString()
+      );
+      const encoded = message_to_string(chatMessage);
       socket.send(encoded);
     }
   };
@@ -160,9 +170,15 @@
           <span class="text-sm text-red-500">Disconnected</span>
         {/if}
       </div>
-      <span class="text-sm text-gray-500">
-        {messages.length}
-      </span>
+      <div>
+        <span class="text-sm text-gray-500">
+          {numParticipants}
+        </span>
+
+        <span class="text-sm text-gray-500">
+          {chatMessages.length}
+        </span>
+      </div>
       <span
         class="text-sm text-gray-500 font-mono w-[130px] text-right space-x-2"
       >
@@ -182,7 +198,7 @@
       class="overflow-y-auto"
       style="height: max(100px, calc(100svh - 310px));"
     >
-      {#each messages as message}
+      {#each chatMessages as message}
         <ChatMessage
           class="no-overflow-anchoring"
           author={message.author}

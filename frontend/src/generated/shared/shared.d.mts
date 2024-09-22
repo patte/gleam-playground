@@ -11,16 +11,17 @@ export class ChatMessage extends _.CustomType {
   created_at: string;
 }
 
-export type Message$ = ChatMessage;
+export class RoomUpdate extends _.CustomType {
+  constructor(num_participants: number);
+  
+  num_participants: number;
+}
+
+export type Message$ = ChatMessage | RoomUpdate;
 
 export function message_to_json(msg: Message$): $json.Json$;
 
 export function message_to_string(msg: Message$): string;
-
-export function decoder(dynamic: $dynamic.Dynamic$): _.Result<
-  Message$,
-  _.List<$dynamic.DecodeError$>
->;
 
 export function message_from_string(json: string): _.Result<
   Message$,

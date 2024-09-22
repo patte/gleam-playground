@@ -14,7 +14,7 @@ class Iterator<BXG> extends _.CustomType {
 
 export type Iterator$<BXG> = Iterator<BXG>;
 
-export class Next<BXH, BXI> extends _.CustomType {
+export class Next<BXI, BXH> extends _.CustomType {
   constructor(element: BXH, accumulator: BXI);
   
   element: BXH;
