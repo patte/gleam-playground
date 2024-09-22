@@ -180,7 +180,7 @@
   <Card.Content class=" flex flex-col justify-end">
     <div
       class="overflow-y-auto"
-      style="height: max(100px, calc(100vh - 300px));"
+      style="height: max(100px, calc(100svh - 310px));"
     >
       {#each messages as message}
         <ChatMessage
@@ -257,7 +257,7 @@
         <Input
           bind:value={input}
           placeholder="Write a message…"
-          class="flex-1"
+          class="flex-1 text-base"
         />
         <Button
           type="submit"

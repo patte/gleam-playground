@@ -5,7 +5,7 @@
   import tailwindLogo from "/tailwind.svg";
 </script>
 
-<div class="flex justify-center gap-9">
+<div class="flex justify-center sm:gap-6 md:gap-9">
   <a href="https://gleam.run" target="_blank" rel="noreferrer">
     <img src={gleamLogo} class="logo gleam" alt="Gleam Logo (Lucy)" />
   </a>
