@@ -73,14 +73,28 @@ pub fn handle_message(
         }
       }
     Text(message) -> {
+      // parse from json
       let parsed_message = message |> shared.message_from_string
-      logging.log(
-        logging.Info,
-        "Received message: " <> string.inspect(parsed_message),
-      )
+
+      // stringify to json
+      let encoded_message = case parsed_message {
+        Ok(parsed_message) -> {
+          logging.log(
+            logging.Info,
+            "Received message: " <> string.inspect(parsed_message),
+          )
+          shared.message_to_string(parsed_message)
+        }
+        Error(_) -> {
+          logging.log(logging.Error, "Failed to parse message: " <> message)
+          message
+        }
+      }
+
+      // send to room
       {
         use room_subject <- option.then(state.room_subject)
-        Some(process.send(room_subject, SendToAll(message)))
+        Some(process.send(room_subject, SendToAll(encoded_message)))
       }
 
       state |> actor.continue
