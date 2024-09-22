@@ -92,7 +92,10 @@
   }
 
   function connect() {
-    const socket = new WebSocket("ws://127.0.0.1:3000/ws");
+    const url = import.meta.env.DEV
+      ? "ws://127.0.0.1:3000/ws" // force 3000 to enable access from vite dev server
+      : `wss://${window.location.host}/ws`;
+    const socket = new WebSocket(url);
     socket.addEventListener("open", onSocketOpen);
     socket.addEventListener("close", onSocketClose);
     socket.addEventListener("message", onMessage);
