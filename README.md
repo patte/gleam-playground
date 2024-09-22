@@ -16,6 +16,8 @@ This repo contains 3 projects:
 ```
 The folder `src/shared` is part of the be project and also it's own project that is built to typescript and [copied to](./frontend/src/generated/) the frontend project. This is a prototype to test code sharing between gleam and typescript.
 
+The [shared module](src/shared/src/shared.gleam) contains type definitions and encode / decode functions for the messages between the fe and be. See how the fe consumes the types at [onMessage](./frontend/src/Chat.svelte#L58) and [sendMessage](./frontend/src/Chat.svelte#L140). End to end types are working: 🎉. Currently, everytime the shared code is edited it needs to be built and copies to the frontend manually with the commands noted below.
+
 ## Development
 
 ### Setup
