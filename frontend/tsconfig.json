@@ -20,7 +20,9 @@
       "$lib": ["lib"],
       "$lib/*": ["lib/*"],
       "$assets": ["assets"],
-      "$assets/*": ["assets/*"]
+      "$assets/*": ["assets/*"],
+      "$generated": ["generated"],
+      "$generated/*": ["generated/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],

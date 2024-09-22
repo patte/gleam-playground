@@ -15,3 +15,4 @@ bun install
 ```bash
 bun dev
 ```
+See [README.md](../README.md) for how to generate shared types and use with backend.

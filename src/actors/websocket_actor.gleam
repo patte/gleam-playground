@@ -6,13 +6,17 @@ import gleam/erlang/process.{type Subject, Normal}
 import gleam/function
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
+import gleam/json.{type Json}
 import gleam/option.{type Option, None, Some}
 import gleam/otp/actor.{type Next, Stop}
+import gleam/string
 import logging
 import mist.{
   type Connection, type ResponseData, type WebsocketConnection,
   type WebsocketMessage, Custom, Text,
 }
+
+import shared/src/shared
 
 pub type WebsocketActorState {
   WebsocketActorState(
@@ -69,6 +73,11 @@ pub fn handle_message(
         }
       }
     Text(message) -> {
+      let parsed_message = message |> shared.message_from_string
+      logging.log(
+        logging.Info,
+        "Received message: " <> string.inspect(parsed_message),
+      )
       {
         use room_subject <- option.then(state.room_subject)
         Some(process.send(room_subject, SendToAll(message)))

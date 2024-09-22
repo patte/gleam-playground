@@ -3,13 +3,22 @@
   import { Button } from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
+  import {
+    message_to_string,
+    message_from_string,
+    ChatMessage as ChatMessageSharedType,
+  } from "$generated/shared/shared.mjs";
   import { onMount, onDestroy } from "svelte";
   import { writable } from "svelte/store";
+  import { Ok } from "$generated/prelude.mjs";
 
-  type Message = {
-    createdAt: Date;
-    author: string;
-    text: string;
+  //type Message = {
+  //  created_at: Date;
+  //  author: string;
+  //  text: string;
+  //};
+  type Message = Omit<ChatMessageSharedType, "withFields" | "created_at"> & {
+    created_at: Date;
   };
 
   type MessageWithDelay = Message & { delay?: number | undefined };
@@ -39,25 +48,22 @@
   const onSocketOpen = () => connected.set(true);
   const onSocketClose = () => connected.set(false);
   const onMessage = (event: MessageEvent) => {
-    let parsedMessage: Message | undefined;
-    try {
-      parsedMessage = JSON.parse(event.data);
-    } catch (e) {}
-
-    if (!parsedMessage) {
+    let result = message_from_string(event.data);
+    if (!(result instanceof Ok)) {
       messages = [
         ...messages,
-        { createdAt: new Date(), author: "Parse Error", text: event.data },
+        { created_at: new Date(), author: "Parse Error", text: event.data },
       ];
       return;
     }
+    let parsedMessage = result["0"] as ChatMessageSharedType;
 
     let delay = 0;
-    let createdAt: Date | undefined = new Date(parsedMessage.createdAt);
-    if (!isNaN(createdAt.getTime())) {
-      delay = new Date().getTime() - createdAt.getTime();
+    let created_at: Date | undefined = new Date(parsedMessage.created_at);
+    if (!isNaN(created_at.getTime())) {
+      delay = new Date().getTime() - created_at.getTime();
     }
-    messages = [...messages, { ...parsedMessage, delay, createdAt }];
+    messages = [...messages, { ...parsedMessage, delay, created_at }];
 
     // avg delay over last x messages
     avgDelay = messages
@@ -102,13 +108,16 @@
 
   const sendMessage = (message: string) => {
     if (socket.readyState <= 1) {
-      socket.send(
-        JSON.stringify({
-          author: "Me",
-          createdAt: new Date().toISOString(),
-          text: message,
-        })
-      );
+      let obj = {
+        $: "ChatMessage",
+        author: "Me",
+        created_at: new Date().toISOString(),
+        text: message,
+      };
+      // todo:  Property 'withFields' is missing in type '{ ... }' but required in type 'ChatMessage'.
+      // @ts-ignore withFiels
+      const encoded = message_to_string(obj);
+      socket.send(encoded);
     }
   };
 
@@ -117,8 +126,8 @@
   function startSending() {
     autoSendInterval = setInterval(() => {
       sendMessage(input || "Hello");
-      //setTimeout(scrollToBottom, 1);
     }, interval);
+    setTimeout(scrollToBottom, 1);
   }
   function stopSending() {
     clearInterval(autoSendInterval);

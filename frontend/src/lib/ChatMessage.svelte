@@ -21,7 +21,7 @@
       </Button>
       -->
       <span class="text-xs text-gray-500"
-        >{delay !== undefined ? `${delay.toFixed(2)}ms` : ""}</span
+        >{delay !== undefined ? `${delay}ms` : ""}</span
       >
     </div>
   </div>

@@ -1,0 +1,17 @@
+name = "shared"
+version = "1.0.0"
+platform = "javascript"
+
+[dependencies]
+gleam_stdlib = ">= 0.40.0 and < 1.0.0"
+gleam_erlang = ">= 0.26.0 and < 1.0.0"
+logging = ">= 1.3.0 and < 2.0.0"
+gleam_json = ">= 2.0.0 and < 3.0.0"
+
+[dev-dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"
+
+[javascript]
+# Generate TypeScript .d.ts files
+typescript_declarations = true
+#runtime = "bun"
