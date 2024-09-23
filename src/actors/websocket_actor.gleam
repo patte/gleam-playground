@@ -11,12 +11,12 @@ import gleam/http/response.{type Response}
 import gleam/int
 import gleam/option.{type Option, None, Some}
 import gleam/otp/actor.{type Next, Stop}
+import gleam/string
 import logging
 import mist.{
   type Connection, type ResponseData, type WebsocketConnection,
   type WebsocketMessage, Custom, Text,
 }
-import shared/build/packages/gleam_stdlib/src/gleam/string
 import shared/src/shared.{ChatMessage}
 
 import process_utils.{process_message_queue_len}
