@@ -38,7 +38,7 @@ COPY --exclude=frontend/ . .
 RUN gleam export erlang-shipment
 
 # final image
-FROM erlang:27.0-slim AS release
+FROM erlang:27.1-slim AS release
 WORKDIR /usr/src/app
 COPY --from=prerelease-fe /usr/src/app/dist frontend/dist
 COPY --from=install-be /usr/src/app/build/erlang-shipment .

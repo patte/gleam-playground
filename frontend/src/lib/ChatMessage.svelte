@@ -12,14 +12,9 @@
       </Avatar>-->
     <div class="flex-1">
       <p class="font-semibold">{author}</p>
-      <p>{body}</p>
+      <p class="wrap-overflow text-sm">{body}</p>
     </div>
-    <div>
-      <!--
-      <Button variant="ghost" size="icon" class="text-muted-foreground">
-        <Trash2 className="w-4 h-4" />
-      </Button>
-      -->
+    <div class="self-end">
       <span class="text-xs text-gray-500 font-mono"
         >{delay !== undefined ? `${delay}ms` : ""}</span
       >

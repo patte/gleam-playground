@@ -2,6 +2,7 @@ import gleam/erlang/process.{type Subject}
 import gleam/int
 import gleam/list
 import gleam/otp/actor.{type Next}
+import gleam/string
 import logging
 
 import actors/messages.{
@@ -78,7 +79,7 @@ fn send_to_all(
     "Sending to "
       <> num_participants |> int.to_string
       <> " participants: "
-      <> shared.message_to_string(message),
+      <> string.slice(shared.message_to_string(message), 0, 200),
   )
   list.each(participants, fn(p) { process.send(p.1, SendToClient(message)) })
 }

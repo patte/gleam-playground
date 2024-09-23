@@ -1,3 +1,4 @@
+import actors/calculator_actor.{Solve, is_calculation}
 import actors/messages.{
   type CustomWebsocketMessage, type RoomActorMessage, ConnectUser,
   DisconnectUser, SendToAll, SendToClient,
@@ -7,6 +8,7 @@ import gleam/erlang/process.{type Subject, Normal}
 import gleam/function
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
+import gleam/int
 import gleam/option.{type Option, None, Some}
 import gleam/otp/actor.{type Next, Stop}
 import logging
@@ -14,8 +16,10 @@ import mist.{
   type Connection, type ResponseData, type WebsocketConnection,
   type WebsocketMessage, Custom, Text,
 }
-
+import shared/build/packages/gleam_stdlib/src/gleam/string
 import shared/src/shared.{ChatMessage}
+
+import process_utils.{process_message_queue_len}
 
 pub type WebsocketActorState {
   WebsocketActorState(
@@ -76,6 +80,18 @@ pub fn handle_message(
       }
     // from browser
     Text(message) -> {
+      // check queue length of process
+      // if too high this means client is sending faster than we can process
+      // we stop calculations if > 3
+      // in testing it was discovered that this number increases by 1 between
+      // runs of handle_message. So our view of how much work is queued is
+      // delayed.
+      let process_queue_len = process_message_queue_len()
+      logging.log(
+        logging.Warning,
+        "queue >>>" <> process_queue_len |> int.to_string,
+      )
+
       // parse from json
       let parsed_message = case message |> shared.message_from_string {
         Ok(parsed_message) -> {
@@ -92,9 +108,53 @@ pub fn handle_message(
         }
       }
 
+      // transform message (calculator)
       // forward ChatMessage to room
       case parsed_message {
-        ChatMessage(_, _, _) -> {
+        ChatMessage(content, author, created_at) -> {
+          // calculator (sync)
+          let parsed_message = case
+            is_calculation(content) && process_queue_len <= 3
+          {
+            False -> parsed_message
+            True -> {
+              // start new actor
+              let calc_actor = calculator_actor.start()
+
+              // call actor with timeout ms
+              let calc_result =
+                process.try_call(
+                  calc_actor,
+                  fn(reply_to) { Solve(reply_to, content) },
+                  2000,
+                )
+
+              // stop actor
+              // without the unlink we kill (our)self
+              process.unlink(process.subject_owner(calc_actor))
+              process.kill(process.subject_owner(calc_actor))
+
+              case calc_result {
+                Ok(Ok(calc_result)) -> {
+                  ChatMessage(
+                    content <> " = " <> calc_result,
+                    author,
+                    created_at,
+                  )
+                }
+                Error(e) -> {
+                  let error = string.inspect(e)
+                  ChatMessage(
+                    content <> " = 💥 " <> error,
+                    author,
+                    created_at,
+                  )
+                }
+                _ -> parsed_message
+              }
+            }
+          }
+
           // send to room
           {
             use room_subject <- option.then(state.room_subject)
@@ -113,6 +173,7 @@ pub fn handle_message(
       state |> actor.continue
     }
     _ -> {
+      logging.log(logging.Info, "Stopping websocket actor in handle_message")
       cleanup(state)
       Stop(Normal)
     }

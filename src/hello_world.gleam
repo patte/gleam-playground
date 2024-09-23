@@ -2,6 +2,7 @@ import actors/messages.{type RoomActorMessage}
 import actors/room_actor
 import actors/websocket_actor
 import gleam/bytes_builder
+import gleam/erlang/node
 import gleam/erlang/process.{type Subject}
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
@@ -15,7 +16,10 @@ import mist.{type Connection, type ResponseData}
 import ip_utils.{get_client_host_port}
 
 pub fn main() {
-  io.println("Hello world!")
+  let all_nodes = [node.self(), ..node.visible()]
+  io.println("Hello world! Node: " <> string.inspect(node.self()))
+  io.println("Visible nodes: " <> string.inspect(all_nodes))
+
   logging.configure()
 
   let room_actor = room_actor.start()

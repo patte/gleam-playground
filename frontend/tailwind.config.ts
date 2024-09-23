@@ -66,6 +66,9 @@ const config: Config = {
         ".no-overflow-anchoring": {
           overflowAnchor: "none",
         },
+        ".wrap-overflow": {
+          overflowWrap: "anywhere",
+        },
       });
     }),
   ],

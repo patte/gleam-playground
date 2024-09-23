@@ -18,6 +18,8 @@
   import Icon from "svelte-awesome";
   import usersIcon from "svelte-awesome/icons/users";
   import envelopeOIcon from "svelte-awesome/icons/envelopeO";
+  import arrowUpIcon from "svelte-awesome/icons/arrowUp";
+  import arrowDownIcon from "svelte-awesome/icons/arrowDown";
   import { LinkedChart } from "svelte-tiny-linked-charts";
 
   type ChatMessage = Omit<
@@ -33,6 +35,7 @@
   let input = "";
   let avgDelay = 0;
   let numParticipants = 0;
+  let numSent = 0;
 
   let meName = `User ${Math.floor(Math.random() * 1000)}`;
 
@@ -41,7 +44,7 @@
 
   function handleSubmit(e: SubmitEvent) {
     sendMessage(input);
-    scrollToBottom();
+    setTimeout(scrollToBottom, 50);
     input = "";
   }
 
@@ -162,6 +165,7 @@
 
   const sendMessage = (message: string) => {
     if (socket.readyState <= 1) {
+      numSent++;
       const chatMessage = new ChatMessageSharedType(
         message,
         meName,
@@ -178,7 +182,7 @@
     autoSendInterval = setInterval(() => {
       sendMessage(input || "Hello 👋");
     }, interval);
-    setTimeout(scrollToBottom, 1);
+    setTimeout(scrollToBottom, 50);
   }
   function stopSending() {
     clearInterval(autoSendInterval);
@@ -207,8 +211,11 @@
           {numParticipants}
         </Badge>
         <Badge variant="outline" class="text-gray-200">
-          <Icon scale={0.75} data={envelopeOIcon} class="mr-1 text-gray-200" />
+          <Icon scale={0.75} data={arrowUpIcon} class="mr-1 text-gray-200" />
+          {numSent}
+          <Icon scale={0.75} data={envelopeOIcon} class="mx-1 text-gray-200" />
           {chatMessages.length}
+          <Icon scale={0.75} data={arrowDownIcon} class="ml-1 text-gray-200" />
         </Badge>
       </div>
       <div class="flex justify-end space-x-2">
@@ -233,7 +240,7 @@
           }}
         />
         <span
-          class="text-sm text-gray-500 font-mono w-[50px] text-right space-x-2"
+          class="text-sm text-gray-500 font-mono min-w-[50px] text-right space-x-2"
         >
           {#if avgDelay > 0}
             <span
@@ -275,7 +282,7 @@
           min={0}
           max={500}
           step={1}
-          class="max-w-[150px]"
+          class="max-w-[189px]"
         />
         <p style="line-height: 37px;" class="w-[60px] font-mono text-right">
           <span style="vertical-align: middle;">{interval}ms</span>
@@ -335,6 +342,17 @@
         >
       </form>
     </div>
+    <p class="text-xs text-gray-500 pt-2">
+      Hint: send long running calculations like <a
+        href="#"
+        class="underline"
+        on:click={() => {
+          input = "20000!";
+          // focus input
+          document.querySelector("input")?.focus();
+        }}>20000!</a
+      >
+    </p>
   </Card.Content>
 </Card.Root>
 
