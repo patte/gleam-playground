@@ -101,25 +101,25 @@
         },
       ];
 
+      let chatMessagesWithDelay = chatMessages.filter(
+        (m) => m.delay !== undefined
+      );
+
       // update chart data
-      chartData = chatMessages
-        .filter((m) => m.delay !== undefined)
-        .slice(-50)
-        .reduce(
-          (acc, msg) => {
-            const date = msg.created_at.toISOString();
-            acc[date] = msg.delay!;
-            return acc;
-          },
-          {} as Record<string, number>
-        );
+      chartData = chatMessagesWithDelay.slice(-50).reduce(
+        (acc, msg) => {
+          const date = msg.created_at.toISOString();
+          acc[date] = msg.delay!;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       // avg delay over last x messages
-      avgDelay = chatMessages
-        .filter((m) => m.delay !== undefined)
+      avgDelay = chatMessagesWithDelay
         .slice(-200)
         .reduce((acc, msg) => acc + (msg.delay || 0), 0);
-      avgDelay /= Math.min(chatMessages.length, 200);
+      avgDelay /= Math.min(chatMessagesWithDelay.length, 200);
     }
   };
 
