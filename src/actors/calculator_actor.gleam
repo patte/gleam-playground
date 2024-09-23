@@ -6,9 +6,9 @@ import gleam/int
 import gleam/list
 import gleam/otp/actor.{type Next}
 import gleam/regex
+import gleam/result
 import gleam/string
 import logging
-import shared/build/packages/gleam_stdlib/src/gleam/result
 
 pub type CalculatorActorMessage {
   // Subjects are generic over their message type, and `Result(String, Nil)` is the type
