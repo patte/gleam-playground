@@ -87,10 +87,15 @@ pub fn handle_message(
       // runs of handle_message. So our view of how much work is queued is
       // delayed.
       let process_queue_len = process_message_queue_len()
-      logging.log(
-        logging.Warning,
-        "queue >>>" <> process_queue_len |> int.to_string,
-      )
+      case process_queue_len {
+        i if i > 3 -> {
+          logging.log(
+            logging.Warning,
+            "queue len:" <> process_queue_len |> int.to_string,
+          )
+        }
+        _ -> Nil
+      }
 
       // parse from json
       let parsed_message = case message |> shared.message_from_string {
