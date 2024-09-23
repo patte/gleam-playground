@@ -103,7 +103,7 @@
 
       // update chart data
       chartData = chatMessages
-        .filter((m) => !!m.delay)
+        .filter((m) => m.delay !== undefined)
         .slice(-50)
         .reduce(
           (acc, msg) => {
@@ -116,6 +116,7 @@
 
       // avg delay over last x messages
       avgDelay = chatMessages
+        .filter((m) => m.delay !== undefined)
         .slice(-200)
         .reduce((acc, msg) => acc + (msg.delay || 0), 0);
       avgDelay /= Math.min(chatMessages.length, 200);
