@@ -43,6 +43,7 @@ WORKDIR /usr/src/app
 COPY --from=prerelease-fe /usr/src/app/dist frontend/dist
 COPY --from=install-be /usr/src/app/build/erlang-shipment .
 COPY --from=install-be /usr/src/app/files files/.
+COPY entrypoint.sh .
 
 EXPOSE 3000/tcp
 # run the app
