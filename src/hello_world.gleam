@@ -2,6 +2,7 @@ import actors/messages.{type RoomActorMessage}
 import actors/room_actor
 import actors/websocket_actor
 import gleam/bytes_builder
+import gleam/erlang/atom
 import gleam/erlang/node
 import gleam/erlang/process.{type Subject}
 import gleam/http/request.{type Request}
@@ -17,7 +18,7 @@ import ip_utils.{get_client_host_port}
 
 pub fn main() {
   io.println("Hello world!")
-  io.println("Node: " <> string.inspect(node.self()))
+  io.println("Node: " <> atom.to_string(node.to_atom(node.self())))
 
   logging.configure()
 

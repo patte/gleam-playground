@@ -10,22 +10,23 @@ COMMAND="${1-default}"
 run() {
   ERL_ARGS=""
 
-  # Check if the environment variable SNAME is set and add it to ERL_ARGS
-  if [ -n "${SNAME-}" ]; then
-    ERL_ARGS="$ERL_ARGS -sname $SNAME"
+  # expand ERL_XARGS environment variable eval to support env vars like $HOST
+  if [ -n "${ERL_XARGS-}" ]; then
+    ERL_ARGS=$(eval echo "$ERL_XARGS")
   fi
 
-  # Check if the environment variable COOKIE is set and add it to ERL_ARGS
+  # add -setcookie if COOKIE is set
   if [ -n "${COOKIE-}" ]; then
     ERL_ARGS="$ERL_ARGS -setcookie $COOKIE"
   fi
+
+  echo "ERL_ARGS: $ERL_ARGS"
 
   erl \
     -pa "$BASE"/*/ebin \
     -eval "$PACKAGE@@main:run($PACKAGE)" \
     -noshell \
     $ERL_ARGS \
-    -proto_dist inet6_tcp \
     -extra "$@"
 }
 

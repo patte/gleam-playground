@@ -22,5 +22,5 @@ cpu_kind = 'shared'
 cpus = 2
 
 [[env]]
-SNAME = "hellogleam"
-COOKIE = "notsecret"
+ERL_XARGS = '-proto_dist inet6_tcp -name ${FLY_APP_NAME}-${FLY_IMAGE_REF##*-}@${FLY_PRIVATE_IP}'
+COOKIE = 'notsecret'
