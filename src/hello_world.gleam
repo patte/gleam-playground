@@ -16,7 +16,8 @@ import mist.{type Connection, type ResponseData}
 import ip_utils.{get_client_host_port}
 
 pub fn main() {
-  io.println("Hello world! Node: " <> string.inspect(node.self()))
+  io.println("Hello world!")
+  io.println("Node: " <> string.inspect(node.self()))
 
   logging.configure()
 
