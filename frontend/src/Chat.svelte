@@ -381,6 +381,16 @@
         href="#"
         class="underline"
         on:click={() => {
+          input = "30000!";
+          // focus input
+          document.querySelector("input")?.focus();
+        }}>30000!</a
+      >
+      or
+      <a
+        href="#"
+        class="underline"
+        on:click={() => {
           input = "60000!";
           // focus input
           document.querySelector("input")?.focus();
