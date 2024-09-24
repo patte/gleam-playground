@@ -150,7 +150,7 @@ pub fn handle_message(
                 Error(e) -> {
                   let error = string.inspect(e)
                   ChatMessage(
-                    content <> " = 💥 " <> error,
+                    content <> " = ? (" <> error <> ")",
                     author,
                     created_at,
                   )

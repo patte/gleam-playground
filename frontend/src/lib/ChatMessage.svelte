@@ -5,14 +5,14 @@
   export let delay: number | undefined;
 </script>
 
-<div class="{$$props.class} mb-4">
+<div class="{$$props.class} mb-2">
   <div class="flex items-start space-x-2">
     <!--<Avatar>
         <AvatarFallback>{author[0]}</AvatarFallback>
       </Avatar>-->
     <div class="flex-1">
       <p class="font-semibold">{author}</p>
-      <p class="wrap-overflow text-sm">{body}</p>
+      <p class="wrap-overflow">{body}</p>
     </div>
     <div class="self-end">
       <span class="text-xs text-gray-500 font-mono"

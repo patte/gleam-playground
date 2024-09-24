@@ -10,7 +10,7 @@
     ChatMessage as ChatMessageSharedType,
     RoomUpdate as RoomUpdateSharedType,
   } from "$generated/shared/shared.mjs";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, tick } from "svelte";
   import { writable } from "svelte/store";
   import { Ok } from "$generated/prelude.mjs";
   import { Slider } from "$lib/components/ui/slider/index.js";
@@ -43,8 +43,8 @@
   let hoveredValue: number | undefined = undefined;
 
   function handleSubmit(e: SubmitEvent) {
+    scrollToBottom();
     sendMessage(input);
-    setTimeout(scrollToBottom, 50);
     input = "";
   }
 
@@ -54,6 +54,20 @@
       throw new Error("Scrollable element not found");
     }
     scrollable.scrollTop = scrollable.scrollHeight;
+  }
+
+  function isScrolledToBottom() {
+    const scrollable = document.querySelector(".overflow-y-auto");
+    if (!scrollable) {
+      return false;
+    }
+    // 2px tolerance
+    return (
+      scrollable.scrollHeight -
+        scrollable.clientHeight -
+        scrollable.scrollTop <=
+      2
+    );
   }
 
   onMount(scrollToBottom);
@@ -81,6 +95,8 @@
       numParticipants = roomUpdate.num_participants;
     } else if (parsedMessage instanceof ChatMessageSharedType) {
       const chatMessage = parsedMessage as ChatMessageSharedType;
+
+      const isScrolledToBottomBefore = isScrolledToBottom();
 
       let delay: number | undefined = undefined;
       let created_at: Date | undefined = new Date(chatMessage.created_at);
@@ -123,6 +139,13 @@
         .slice(-200)
         .reduce((acc, msg) => acc + (msg.delay || 0), 0);
       avgDelay /= Math.min(chatMessagesWithDelay.length, 200);
+
+      // scroll to bottom if was before or not many messages
+      if (isScrolledToBottomBefore || chatMessages.length <= 12) {
+        tick().then(() => {
+          scrollToBottom();
+        });
+      }
     }
   };
 
@@ -179,10 +202,12 @@
   let interval: number = 250;
   let autoSendInterval: number | undefined;
   function startSending() {
+    if (!input.length) {
+      input = "Hello 👋";
+    }
     autoSendInterval = setInterval(() => {
       sendMessage(input || "Hello 👋");
     }, interval);
-    setTimeout(scrollToBottom, 50);
   }
   function stopSending() {
     clearInterval(autoSendInterval);
@@ -256,17 +281,16 @@
   <Card.Content class=" flex flex-col justify-end">
     <div
       class="overflow-y-auto"
-      style="height: max(100px, calc(100svh - 310px));"
+      style="height: max(100px, calc(100svh - 340px));"
     >
       {#each chatMessages as message}
         <ChatMessage
-          class="no-overflow-anchoring"
+          class=" even:bg-[#0f1422] px-2 py-1 rounded-sm"
           author={message.author}
           body={message.text}
           delay={message.delay}
         />
       {/each}
-      <div class="anchor" />
     </div>
     <div class="space-y-2">
       <div class="flex space-x-2 justify-end">
@@ -347,18 +371,21 @@
         href="#"
         class="underline"
         on:click={() => {
-          input = "20000!";
+          input = "200!";
           // focus input
           document.querySelector("input")?.focus();
-        }}>20000!</a
+        }}>200!</a
+      >
+      or
+      <a
+        href="#"
+        class="underline"
+        on:click={() => {
+          input = "60000!";
+          // focus input
+          document.querySelector("input")?.focus();
+        }}>60000!</a
       >
     </p>
   </Card.Content>
 </Card.Root>
-
-<style>
-  .anchor {
-    height: 1px;
-    overflow-anchor: auto;
-  }
-</style>
