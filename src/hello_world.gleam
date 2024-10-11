@@ -22,6 +22,7 @@ pub fn main() {
 
   logging.configure()
 
+  // the one and only room
   let room_actor = room_actor.start()
 
   let assert Ok(_) = serve(room_actor)

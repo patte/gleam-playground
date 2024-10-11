@@ -48,8 +48,7 @@ fn handle_message(
 
       let result = case number {
         Ok(number) -> {
-          let result = number |> factorial(1) |> int.to_string
-          logging.log(logging.Info, "Calculation inner finished!")
+          let result = factorial(number) |> int.to_string
           Ok(result)
         }
         _ -> {
@@ -64,9 +63,14 @@ fn handle_message(
   }
 }
 
-fn factorial(n: Int, acc: Int) -> Int {
+pub fn factorial(x: Int) -> Int {
+  factorial_loop(x, 1)
+}
+
+fn factorial_loop(n: Int, acc: Int) -> Int {
   case n {
     0 -> acc
-    _ -> factorial(n - 1, n * acc)
+    1 -> acc
+    _ -> factorial_loop(n - 1, n * acc)
   }
 }

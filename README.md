@@ -6,6 +6,7 @@ Sources:
 - [connellr023/chatter-reborn](https://github.com/connellr023/chatter-reborn)
 - [hayleigh-dot-dev/fosdem-2023](https://github.com/hayleigh-dot-dev/fosdem-2023)
 - [bcpeinhardt/learn_otp_with_gleam](https://github.com/bcpeinhardt/learn_otp_with_gleam)
+- [Exploring the Gleam FFI - Jonas Hietala](https://www.jonashietala.se/blog/2024/01/11/exploring_the_gleam_ffi)
 
 ## Structure
 This repo contains 3 projects:
@@ -39,6 +40,7 @@ cd src/shared
 gleam build --target javascript
 rm -rf ../../frontend/src/generated
 cp -r build/dev/javascript ../../frontend/src/generated
+cd ../..
 
 # run frontend
 cd frontend
