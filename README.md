@@ -43,7 +43,10 @@ This repo contains 3 projects:
 ```
 The folder `src/shared` is part of the be project and also it's own project that is built to typescript and [copied to](./frontend/src/generated/) the frontend project. This organisation comes from the limitation that gleam can not have different entrypoints for the targets erlang and javascript but nested projects seem to work.
 
-The [shared module](src/shared/src/shared.gleam) contains type definitions and encode / decode functions for the messages between the fe and be. See how the fe consumes the types at [onMessage](./frontend/src/Chat.svelte#L58) and [sendMessage](./frontend/src/Chat.svelte#L140). End to end types are working: 🎉. Currently, everytime the shared code is edited it needs to be built and copied to the frontend manually with the commands noted below. Whether these files should be checked into version control is debatable, it's done here for this example to be explorable without running it.
+The [shared module](src/shared/src/shared.gleam) contains type definitions and encode and decode functions for the messages between the frontend and backend. It is compiled into [shared.mjs](./frontend/src/generated/shared/shared.mjs) [shared.d.mts](./frontend/src/generated/shared/shared.d.mts). See how the fe consumes the types at [onMessage](./frontend/src/Chat.svelte#L58) and [sendMessage](./frontend/src/Chat.svelte#L140). 
+End to end types are working 🎉
+
+Currently, everytime the shared code is edited it needs to be built and copied to the frontend manually with the commands noted above. Whether these files should be checked into version control is debatable, it's done here for this example to be explorable without running it.
 
 
 ### OTP Actors
