@@ -2,15 +2,15 @@ import type * as $option from "../../gleam_stdlib/gleam/option.d.mts";
 import type * as $string from "../../gleam_stdlib/gleam/string.d.mts";
 import type * as _ from "../gleam.d.mts";
 
-export function equal<GIB>(a: GIB, b: GIB): undefined;
+export function equal<GIA>(a: GIA, b: GIA): undefined;
 
-export function not_equal<GIC>(a: GIC, b: GIC): undefined;
+export function not_equal<GIB>(a: GIB, b: GIB): undefined;
 
-export function be_ok<GID>(a: _.Result<GID, any>): GID;
+export function be_ok<GIC>(a: _.Result<GIC, any>): GIC;
 
-export function be_error<GII>(a: _.Result<any, GII>): GII;
+export function be_error<GIH>(a: _.Result<any, GIH>): GIH;
 
-export function be_some<GIL>(a: $option.Option$<GIL>): GIL;
+export function be_some<GIK>(a: $option.Option$<GIK>): GIK;
 
 export function be_none(a: $option.Option$<any>): undefined;
 

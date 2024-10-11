@@ -30,21 +30,21 @@ export class UnexpectedFormat extends _.CustomType {
 
 export type DecodeError$ = UnexpectedEndOfInput | UnexpectedByte | UnexpectedSequence | UnexpectedFormat;
 
-export function decode<GFG>(
+export function decode<GFF>(
   json: string,
   decoder: (x0: $dynamic.Dynamic$) => _.Result<
-    GFG,
+    GFF,
     _.List<$dynamic.DecodeError$>
   >
-): _.Result<GFG, DecodeError$>;
+): _.Result<GFF, DecodeError$>;
 
-export function decode_bits<GFQ>(
+export function decode_bits<GFP>(
   json: _.BitArray,
   decoder: (x0: $dynamic.Dynamic$) => _.Result<
-    GFQ,
+    GFP,
     _.List<$dynamic.DecodeError$>
   >
-): _.Result<GFQ, DecodeError$>;
+): _.Result<GFP, DecodeError$>;
 
 export function to_string(json: Json$): string;
 
@@ -60,13 +60,13 @@ export function float(input: number): Json$;
 
 export function null$(): Json$;
 
-export function nullable<GFW>(
-  input: $option.Option$<GFW>,
-  inner_type: (x0: GFW) => Json$
+export function nullable<GFV>(
+  input: $option.Option$<GFV>,
+  inner_type: (x0: GFV) => Json$
 ): Json$;
 
 export function object(entries: _.List<[string, Json$]>): Json$;
 
 export function preprocessed_array(from: _.List<Json$>): Json$;
 
-export function array<GGA>(entries: _.List<GGA>, inner_type: (x0: GGA) => Json$): Json$;
+export function array<GFZ>(entries: _.List<GFZ>, inner_type: (x0: GFZ) => Json$): Json$;

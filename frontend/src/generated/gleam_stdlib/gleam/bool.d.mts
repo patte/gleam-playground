@@ -20,14 +20,14 @@ export function to_int(bool: boolean): number;
 
 export function to_string(bool: boolean): string;
 
-export function guard<DKG>(
+export function guard<DKF>(
   requirement: boolean,
-  consequence: DKG,
+  consequence: DKF,
+  alternative: () => DKF
+): DKF;
+
+export function lazy_guard<DKG>(
+  requirement: boolean,
+  consequence: () => DKG,
   alternative: () => DKG
 ): DKG;
-
-export function lazy_guard<DKH>(
-  requirement: boolean,
-  consequence: () => DKH,
-  alternative: () => DKH
-): DKH;

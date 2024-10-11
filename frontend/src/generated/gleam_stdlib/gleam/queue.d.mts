@@ -1,45 +1,45 @@
 import type * as _ from "../gleam.d.mts";
 import type * as $list from "../gleam/list.d.mts";
 
-class Queue<EYB> extends _.CustomType {
+class Queue<EYA> extends _.CustomType {
   constructor(in$: _.List<any>, out: _.List<any>);
   
   in$: _.List<any>;
   out: _.List<any>;
 }
 
-export type Queue$<EYB> = Queue<EYB>;
+export type Queue$<EYA> = Queue<EYA>;
 
 export function new$(): Queue$<any>;
 
-export function from_list<EYE>(list: _.List<EYE>): Queue$<EYE>;
+export function from_list<EYD>(list: _.List<EYD>): Queue$<EYD>;
 
-export function to_list<EYH>(queue: Queue$<EYH>): _.List<EYH>;
+export function to_list<EYG>(queue: Queue$<EYG>): _.List<EYG>;
 
 export function is_empty(queue: Queue$<any>): boolean;
 
 export function length(queue: Queue$<any>): number;
 
-export function push_back<EYO>(queue: Queue$<EYO>, item: EYO): Queue$<EYO>;
+export function push_back<EYN>(queue: Queue$<EYN>, item: EYN): Queue$<EYN>;
 
-export function push_front<EYR>(queue: Queue$<EYR>, item: EYR): Queue$<EYR>;
+export function push_front<EYQ>(queue: Queue$<EYQ>, item: EYQ): Queue$<EYQ>;
 
-export function pop_back<EYU>(queue: Queue$<EYU>): _.Result<
-  [EYU, Queue$<EYU>],
+export function pop_back<EYT>(queue: Queue$<EYT>): _.Result<
+  [EYT, Queue$<EYT>],
   undefined
 >;
 
-export function pop_front<EYZ>(queue: Queue$<EYZ>): _.Result<
-  [EYZ, Queue$<EYZ>],
+export function pop_front<EYY>(queue: Queue$<EYY>): _.Result<
+  [EYY, Queue$<EYY>],
   undefined
 >;
 
-export function reverse<EZE>(queue: Queue$<EZE>): Queue$<EZE>;
+export function reverse<EZD>(queue: Queue$<EZD>): Queue$<EZD>;
 
-export function is_logically_equal<EZM>(
-  a: Queue$<EZM>,
-  b: Queue$<EZM>,
-  element_is_equal: (x0: EZM, x1: EZM) => boolean
+export function is_logically_equal<EZL>(
+  a: Queue$<EZL>,
+  b: Queue$<EZL>,
+  element_is_equal: (x0: EZL, x1: EZL) => boolean
 ): boolean;
 
-export function is_equal<EZP>(a: Queue$<EZP>, b: Queue$<EZP>): boolean;
+export function is_equal<EZO>(a: Queue$<EZO>, b: Queue$<EZO>): boolean;

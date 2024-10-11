@@ -8,4 +8,4 @@ export function println(string: string): undefined;
 
 export function println_error(string: string): undefined;
 
-export function debug<EXR>(term: EXR): EXR;
+export function debug<EXQ>(term: EXQ): EXQ;

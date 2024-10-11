@@ -67,7 +67,7 @@ export function system_time(a: TimeUnit$): number;
 
 export function erlang_timestamp(): [number, number, number];
 
-export function rescue<FTP>(a: () => FTP): _.Result<FTP, Crash$>;
+export function rescue<FTO>(a: () => FTO): _.Result<FTO, Crash$>;
 
 export function binary_to_term(binary: _.BitArray): _.Result<
   $dynamic.Dynamic$,

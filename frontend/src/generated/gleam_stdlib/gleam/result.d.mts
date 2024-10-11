@@ -5,80 +5,80 @@ export function is_ok(result: _.Result<any, any>): boolean;
 
 export function is_error(result: _.Result<any, any>): boolean;
 
-export function map<BNM, BNN, BNQ>(
-  result: _.Result<BNM, BNN>,
-  fun: (x0: BNM) => BNQ
-): _.Result<BNQ, BNN>;
+export function map<BNL, BNM, BNP>(
+  result: _.Result<BNL, BNM>,
+  fun: (x0: BNL) => BNP
+): _.Result<BNP, BNM>;
 
-export function map_error<BNT, BNU, BNX>(
-  result: _.Result<BNT, BNU>,
-  fun: (x0: BNU) => BNX
-): _.Result<BNT, BNX>;
+export function map_error<BNS, BNT, BNW>(
+  result: _.Result<BNS, BNT>,
+  fun: (x0: BNT) => BNW
+): _.Result<BNS, BNW>;
 
-export function flatten<BOA, BOB>(result: _.Result<_.Result<BOA, BOB>, BOB>): _.Result<
-  BOA,
-  BOB
+export function flatten<BNZ, BOA>(result: _.Result<_.Result<BNZ, BOA>, BOA>): _.Result<
+  BNZ,
+  BOA
 >;
 
-export function try$<BOI, BOJ, BOM>(
-  result: _.Result<BOI, BOJ>,
-  fun: (x0: BOI) => _.Result<BOM, BOJ>
-): _.Result<BOM, BOJ>;
+export function try$<BOH, BOI, BOL>(
+  result: _.Result<BOH, BOI>,
+  fun: (x0: BOH) => _.Result<BOL, BOI>
+): _.Result<BOL, BOI>;
 
-export function then$<BOR, BOS, BOV>(
-  result: _.Result<BOR, BOS>,
-  fun: (x0: BOR) => _.Result<BOV, BOS>
-): _.Result<BOV, BOS>;
+export function then$<BOQ, BOR, BOU>(
+  result: _.Result<BOQ, BOR>,
+  fun: (x0: BOQ) => _.Result<BOU, BOR>
+): _.Result<BOU, BOR>;
 
-export function unwrap<BPA>(result: _.Result<BPA, any>, default$: BPA): BPA;
+export function unwrap<BOZ>(result: _.Result<BOZ, any>, default$: BOZ): BOZ;
 
-export function lazy_unwrap<BPE>(
-  result: _.Result<BPE, any>,
-  default$: () => BPE
-): BPE;
+export function lazy_unwrap<BPD>(
+  result: _.Result<BPD, any>,
+  default$: () => BPD
+): BPD;
 
-export function unwrap_error<BPJ>(result: _.Result<any, BPJ>, default$: BPJ): BPJ;
+export function unwrap_error<BPI>(result: _.Result<any, BPI>, default$: BPI): BPI;
 
-export function unwrap_both<BPM>(result: _.Result<BPM, BPM>): BPM;
+export function unwrap_both<BPL>(result: _.Result<BPL, BPL>): BPL;
 
-export function nil_error<BPP>(result: _.Result<BPP, any>): _.Result<
-  BPP,
+export function nil_error<BPO>(result: _.Result<BPO, any>): _.Result<
+  BPO,
   undefined
 >;
 
-export function or<BPV, BPW>(
-  first: _.Result<BPV, BPW>,
-  second: _.Result<BPV, BPW>
-): _.Result<BPV, BPW>;
+export function or<BPU, BPV>(
+  first: _.Result<BPU, BPV>,
+  second: _.Result<BPU, BPV>
+): _.Result<BPU, BPV>;
 
-export function lazy_or<BQD, BQE>(
-  first: _.Result<BQD, BQE>,
-  second: () => _.Result<BQD, BQE>
-): _.Result<BQD, BQE>;
+export function lazy_or<BQC, BQD>(
+  first: _.Result<BQC, BQD>,
+  second: () => _.Result<BQC, BQD>
+): _.Result<BQC, BQD>;
 
-export function all<BQL, BQM>(results: _.List<_.Result<BQL, BQM>>): _.Result<
-  _.List<BQL>,
-  BQM
+export function all<BQK, BQL>(results: _.List<_.Result<BQK, BQL>>): _.Result<
+  _.List<BQK>,
+  BQL
 >;
 
-export function partition<BQT, BQU>(results: _.List<_.Result<BQT, BQU>>): [
-  _.List<BQT>,
-  _.List<BQU>
+export function partition<BQS, BQT>(results: _.List<_.Result<BQS, BQT>>): [
+  _.List<BQS>,
+  _.List<BQT>
 ];
 
-export function replace<BRJ, BRM>(result: _.Result<any, BRJ>, value: BRM): _.Result<
-  BRM,
-  BRJ
+export function replace<BRI, BRL>(result: _.Result<any, BRI>, value: BRL): _.Result<
+  BRL,
+  BRI
 >;
 
-export function replace_error<BRP, BRT>(result: _.Result<BRP, any>, error: BRT): _.Result<
-  BRP,
-  BRT
+export function replace_error<BRO, BRS>(result: _.Result<BRO, any>, error: BRS): _.Result<
+  BRO,
+  BRS
 >;
 
-export function values<BRW>(results: _.List<_.Result<BRW, any>>): _.List<BRW>;
+export function values<BRV>(results: _.List<_.Result<BRV, any>>): _.List<BRV>;
 
-export function try_recover<BSC, BSD, BSG>(
-  result: _.Result<BSC, BSD>,
-  fun: (x0: BSD) => _.Result<BSC, BSG>
-): _.Result<BSC, BSG>;
+export function try_recover<BSB, BSC, BSF>(
+  result: _.Result<BSB, BSC>,
+  fun: (x0: BSC) => _.Result<BSB, BSF>
+): _.Result<BSB, BSF>;
