@@ -81,3 +81,8 @@ Sources:
 ## Screenshot
 
 ![Screenshot](./docs/screenshot.png)
+
+
+
+https://github.com/user-attachments/assets/ad39b850-2ef3-4b93-9836-0b6ada490a7b
+
